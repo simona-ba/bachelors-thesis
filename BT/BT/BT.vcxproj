@@ -70,16 +70,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>S:\BachelorsThesis\BT\BT\Libraries\Includes;$(IncludePath)</IncludePath>
-    <LibraryPath>S:\BachelorsThesis\BT\BT\Libraries\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Libraries\Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>S:\BP\LOGL\Libraries\Includes;$(IncludePath)</IncludePath>
     <LibraryPath>S:\BP\LOGL\Libraries\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>S:\BachelorsThesis\BT\BT\Libraries\Includes;$(IncludePath)</IncludePath>
-    <LibraryPath>S:\BachelorsThesis\BT\BT\Libraries\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Libraries\Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
