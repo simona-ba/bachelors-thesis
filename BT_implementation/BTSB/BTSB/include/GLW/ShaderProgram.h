@@ -18,12 +18,12 @@ namespace glw
   //! Indicates the type of shader.
   enum class ShaderType
   {
-    VERTEX		= gl::GLenum::GL_VERTEX_SHADER,
-    TESS_CTRL	= gl::GLenum::GL_TESS_CONTROL_SHADER,
-    TESS_EVAL	= gl::GLenum::GL_TESS_EVALUATION_SHADER,
-    GEOMETRY	= gl::GLenum::GL_GEOMETRY_SHADER,
-    FRAGMENT	= gl::GLenum::GL_FRAGMENT_SHADER,
-    COMPUTE		= gl::GLenum::GL_COMPUTE_SHADER
+    VERTEX		= (unsigned int)gl::GLenum::GL_VERTEX_SHADER,
+    TESS_CTRL	= (unsigned int)gl::GLenum::GL_TESS_CONTROL_SHADER,
+    TESS_EVAL	= (unsigned int)gl::GLenum::GL_TESS_EVALUATION_SHADER,
+    GEOMETRY	= (unsigned int)gl::GLenum::GL_GEOMETRY_SHADER,
+    FRAGMENT	= (unsigned int)gl::GLenum::GL_FRAGMENT_SHADER,
+    COMPUTE		= (unsigned int)gl::GLenum::GL_COMPUTE_SHADER
   };
 
   //! Creates ShaderType from extension of specified shader file name.

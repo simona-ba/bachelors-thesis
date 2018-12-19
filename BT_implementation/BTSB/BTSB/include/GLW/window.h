@@ -10,7 +10,6 @@
 #include <set>
 #include <array>
 #include <unordered_map>
-#include <memory>
 
 #include <glm/glm.hpp>
 
