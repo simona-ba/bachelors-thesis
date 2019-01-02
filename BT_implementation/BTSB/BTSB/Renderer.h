@@ -4,17 +4,7 @@
 #include <GLW/Window.h>
 #include "Object.h"
 
-class MyObserver : public glw::WindowEventObserver
-{
-	// this method is called every time someone clicks on window
-	// see implementation of WindowEventObserver for many other methods
-	virtual void OnMouseDown(int button, int mods) override
-	{
-		std::cout << "Mouse key was pressed" << std::endl;
-	}
-};
-
-class Renderer
+class Renderer : public glw::WindowEventObserver
 {
 public:
 	

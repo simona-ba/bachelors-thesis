@@ -14,11 +14,10 @@ Renderer::Renderer()
 	// create new window with parameters
 	window = new glw::Window(params);
 
-	// implementation of user interaction
-	MyObserver input_control;
+	
 
 	// register input_control to receive events from window
-	window->ObserverRegister(&input_control);
+	window->ObserverRegister(this);
 
 	Construct();
 
