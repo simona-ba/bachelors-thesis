@@ -13,6 +13,8 @@
 #include <iostream>
 #include <vector>
 
+unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
+
 class Model
 {
 public:
@@ -24,6 +26,7 @@ public:
 	void Draw(Shader shader);
 private:
 	/*  Model Data  */
+	vector<Texture> textures_loaded;
 	vector<Mesh> meshes;
 	string directory;
 	/*  Functions   */
