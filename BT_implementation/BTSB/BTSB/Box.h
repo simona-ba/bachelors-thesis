@@ -10,14 +10,14 @@ public:
 	Box();
 	~Box();
 
-	virtual void Draw() override;
+	virtual void Draw(Shader shader) override;
 
 private:
 
 	unsigned int vao_;
 	unsigned int vbo_;
 
-	Shader box_shader_ = Shader("Shaders/box_shader.vs", "Shaders/box_shader.fs");
+	
 
 
 };

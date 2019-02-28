@@ -1,5 +1,9 @@
 #pragma once
+
+#include "Shader.h"
+
 #include <glm/glm.hpp>
+
 
 class Transform
 {
@@ -29,6 +33,6 @@ class Object : public Transform
 {
 public:
 
-	virtual void Draw() {} 
+	virtual void Draw(Shader shader) = 0;
 
 };

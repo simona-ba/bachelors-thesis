@@ -71,12 +71,12 @@ Box::Box()
 	glBindVertexArray(0);
 
 }
-void Box::Draw()
+void Box::Draw(Shader shader)
 {
-	box_shader_.use();
+	shader.use();
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::window_width) / (float)(Renderer::window_height), 0.1f, 100.0f);
-	box_shader_.setMat4("projection", projection);
+	shader.setMat4("projection", projection);
 
 	// camera/view transformation
 	glm::mat4 view;
@@ -85,11 +85,11 @@ void Box::Draw()
 	glm::vec3 cameraFront = glm::vec3(1.f, 0.f, 0.f);
 	glm::vec3 cameraUp = glm::vec3(0.f, 0.f, 1.f);
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	box_shader_.setMat4("view", view);
+	shader.setMat4("view", view);
 
 	glBindVertexArray(vao_);
 
-	box_shader_.setMat4("model", model_matrix);
+	shader.setMat4("model", model_matrix);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	glBindVertexArray(0);

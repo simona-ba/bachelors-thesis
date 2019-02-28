@@ -2,8 +2,15 @@
 #include <iostream>
 #include <memory>
 #include <GLW/Window.h>
+#include <GLW/Texture.h>
+#include <string>
 #include "Object.h"
 #include "Box.h"
+
+using namespace std;
+using namespace glw;
+
+unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
 
 class Renderer : public glw::WindowEventObserver
 {
@@ -37,5 +44,6 @@ private:
 
 	Box* test_box_;
 
+	Shader* debug_shader_;
 };
 
