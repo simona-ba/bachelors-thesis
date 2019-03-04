@@ -1,37 +1,58 @@
 #include "Renderer.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
+void processInput(Renderer &r, GLFWwindow *window);
 
 int main()
 {
 	Renderer r;
-	glw::Window* window;
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// specify initial window parameters
-	glw::Window::InitParameters params;
-	params.aa_samples = 0;
-	params.try_share_contexts = false;
-	params.resolution = glm::uvec2(r.window_width, r.window_height);
 
-	// create new window with parameters
-	window = new glw::Window(params);
+	GLFWwindow* window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, "GloriousBachelorsThesis", NULL, NULL);
+	if (window == NULL)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
+	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// register input_control to receive events from window
-	window->ObserverRegister(&r);
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		std::cout << "Failed to initialize GLAD" << std::endl;
+		return -1;
+	}
 
 	r.Construct();
 
-	while (!window->ShouldClose())
+	while (!glfwWindowShouldClose(window))
 	{
+		processInput(r, window);
+
 		r.Draw();
 
-		// after drawing swap buffers
-		window->PollEvents();
-
-		// inform all window observers about actions
-		window->SwapBuffers();
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
-	delete window;
-
+	glfwTerminate();
 	return 0;
+}
+
+void processInput(Renderer &r, GLFWwindow *window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS)
+		r.SetViewMode(Default);
+
+	if (glfwGetKey(window, GLFW_KEY_F2) == GLFW_PRESS)
+		r.SetViewMode(Wireframe);
 }

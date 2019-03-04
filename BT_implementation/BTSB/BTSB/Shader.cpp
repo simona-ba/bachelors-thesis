@@ -1,7 +1,5 @@
 #include "Shader.h"
-#include <glbinding/gl/gl.h>
-
-using namespace gl;
+#include <glad/glad.h>
 
 Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
 {
@@ -53,7 +51,7 @@ Shader::Shader(const std::string vertexPath, const std::string fragmentPath)
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
-	// similiar for Fragment Shader
+	// similar for Fragment Shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fShaderCode, NULL);
 	glCompileShader(fragment);

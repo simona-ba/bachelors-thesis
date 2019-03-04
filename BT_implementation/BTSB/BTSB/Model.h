@@ -25,11 +25,11 @@ public:
 	void loadModel(string path);
 
 private:
-	vector<STexture> textures_loaded;
+	vector<Texture> textures_loaded;
 	vector<Mesh> meshes;
 	string directory;
 
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-	vector<STexture> loadMaterialTextures(aiMaterial *material, aiTextureType type, string typeName);
+	vector<Texture> loadMaterialTextures(aiMaterial *material, aiTextureType type, string typeName);
 };

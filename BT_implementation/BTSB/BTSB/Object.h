@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Shader.h"
-
 #include <glm/glm.hpp>
+#include "Shader.h"
 
 
 class Transform

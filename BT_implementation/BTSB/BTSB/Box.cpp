@@ -1,10 +1,8 @@
 #include "Box.h"
-#include <glbinding/gl/gl.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include "Renderer.h"
 #include <glm/ext.hpp>
-
-using namespace gl;
 
 Box::Box()
 {

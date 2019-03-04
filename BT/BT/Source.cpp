@@ -226,7 +226,7 @@ int main()
 	//myShader.setInt("texture1", 0);
 	//myShader.setInt("texture2", 1);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	//glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	//myShader.setMat4("projection", projection);
 
 

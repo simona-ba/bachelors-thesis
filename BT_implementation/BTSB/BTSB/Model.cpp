@@ -1,23 +1,20 @@
 #include "Model.h"
-#include <GLW/Texture.h>
 #include <glm/ext.hpp>
 #include "Renderer.h"
 #include "Mesh.h"
-
-using namespace glw;
+#include <glad/glad.h>
 
 void Model::Draw(Shader shader)
 {
-
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::window_width) / (float)(Renderer::window_height), 0.1f, 100.0f);
 	shader.setMat4("projection", projection);
 
 	// camera/view transformation
 	glm::mat4 view;
 	float radius = 10.0f;
-	glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 0.f);
-	glm::vec3 cameraFront = glm::vec3(1.f, 0.f, 0.f);
-	glm::vec3 cameraUp = glm::vec3(0.f, 0.f, 1.f);
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	shader.setMat4("view", view);
 	shader.setMat4("model", model_matrix);
@@ -62,7 +59,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
-	vector<STexture> textures;
+	vector<Texture> textures;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -104,16 +101,16 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	{
 		aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 		// 1. diffuse maps
-		vector<STexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		// 2. specular maps
-		vector<STexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		// 3. normal maps
-		std::vector<STexture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
 		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		// 4. height maps
-		std::vector<STexture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	}
@@ -122,9 +119,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 }
 
 
-vector<STexture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
+vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
 {
-	vector<STexture> textures;
+	vector<Texture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
@@ -141,7 +138,7 @@ vector<STexture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type
 		}
 		if (!skip)
 		{   // if texture hasn't been loaded already, load it
-			STexture texture;
+			Texture texture;
 			texture.id = TextureFromFile(str.C_Str(), directory);
 			texture.type = typeName;
 			texture.path = str.C_Str();

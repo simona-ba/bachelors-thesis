@@ -1,10 +1,9 @@
 #include "Mesh.h"
-#include <glbinding/gl/gl.h>
+#include <glad/glad.h>
 
-using namespace gl;
 using namespace std;
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<STexture> textures)
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;

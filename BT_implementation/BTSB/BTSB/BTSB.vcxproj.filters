@@ -36,6 +36,12 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -56,5 +62,25 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\box_shader.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\box_shader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\nano.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\nano.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\shader.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\shader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
