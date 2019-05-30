@@ -8,8 +8,8 @@
 
 Model::Model()
 {
-	basic_lighting_ = new Shader("Shaders/ads.vs", "Shaders/ads.fs");
-	normals_visualization_ = new Shader("Shaders/normal.vs", "Shaders/normal.fs", "Shaders/normal.gs");
+	basic_lighting_ = new Shader("shaders/main.vs", "shaders/main.fs");
+	normals_visualization_ = new Shader("shaders/normal.vs", "shaders/normal.fs", "shaders/normal.gs");
 }
 
 void Model::Draw(Shader shader)
@@ -19,37 +19,28 @@ void Model::Draw(Shader shader)
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 	basic_lighting_->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-	basic_lighting_->setVec3("lightPos", lightPos);
+	basic_lighting_->setVec3("lightPos", Renderer::instance().GetLight()->GetLocation());
 	basic_lighting_->setVec3("viewPos", Renderer::instance().GetCamera()->GetLocation());
-	basic_lighting_->setInt("viewMode", Renderer::instance().currentViewMode);
+	basic_lighting_->setInt("viewMode", Renderer::instance().current_view_mode);
 
 	// view/projection transformations
-	//glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::window_width) / (float)(Renderer::window_height), 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::instance().window_width) / (float)(Renderer::instance().window_height), 0.1f, 100.0f);
 
 	basic_lighting_->setMat4("projection", projection);
 	basic_lighting_->setMat4("view", Renderer::instance().GetCamera()->GetViewMatrix());
 	basic_lighting_->setInt("specularEnabled", Renderer::instance().IsSpecularEnabled());
 	basic_lighting_->setInt("blinnEnabled", Renderer::instance().IsBlinnEnabled());
+	basic_lighting_->setInt("normalEnabled", Renderer::instance().IsNormalEnabled());
 
 	// world transformation
-	//glm::mat4 model = glm::mat4(1.0f);
 	basic_lighting_->setMat4("model", model_matrix);
-
-
-	//basic_lighting_->setMat4("projection", projection);
-
-	// camera/view transformation
-
-	//shader.setMat4("view", Renderer::instance().GetCamera()->GetViewMatrix());
-	//shader.setMat4("model", model_matrix);
 
 	for (unsigned int i = 0; i < meshes_.size(); i++)
 	{
 		meshes_[i].Draw(*basic_lighting_);
 	}
 
-	if (Renderer::instance().currentViewMode == NORMALS)
+	if (Renderer::instance().current_view_mode == NORMALS)
 	{
 		normals_visualization_->use();
 		normals_visualization_->setMat4("projection", projection);
@@ -77,7 +68,7 @@ void Model::loadModel(string path)
 
 	processNode(scene->mRootNode, scene);
 
-	cout << "Loaded model has " << vertexCount_ << " vertices and " << faceCount_ << " polygons.";
+	cout << "Loaded model has " << vertex_count_ << " vertices and " << face_count_ << " polygons.";
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene)
@@ -100,8 +91,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 
-	vertexCount_ += mesh->mNumVertices;
-	faceCount_ += mesh->mNumFaces;
+	vertex_count_ += mesh->mNumVertices;
+	face_count_ += mesh->mNumFaces;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -123,6 +114,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		vector.z = mesh->mTangents[i].z;
 		vertex.Tangent = vector;
 
+		vector.x = mesh->mBitangents[i].x;
+		vector.y = mesh->mBitangents[i].y;
+		vector.z = mesh->mBitangents[i].z;
+		vertex.Bitangent = vector;
 
 		if (mesh->mTextureCoords[0])
 		{
@@ -156,10 +151,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		// 3. normal maps
 		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
 		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		// 4. height maps
-		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-
 	}
 
 	return Mesh(vertices, indices, textures);

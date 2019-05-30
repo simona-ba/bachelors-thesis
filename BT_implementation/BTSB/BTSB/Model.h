@@ -33,8 +33,8 @@ private:
 	vector<Mesh> meshes_;
 	string directory_;
 
-	int vertexCount_ = 0;
-	int faceCount_ = 0;
+	int vertex_count_ = 0;
+	int face_count_ = 0;
 
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);

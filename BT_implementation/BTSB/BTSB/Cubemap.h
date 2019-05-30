@@ -18,8 +18,8 @@ private:
 
 	unsigned int vao_;
 	unsigned int vbo_;
-	Shader* cubemapShader_;
-	unsigned cubemapTexture_;
+	Shader* cubemap_shader_;
+	unsigned cubemap_texture_;
 	
 	unsigned int loadCubemap(std::vector<std::string> faces);
 	

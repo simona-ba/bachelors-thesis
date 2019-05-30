@@ -73,7 +73,7 @@ void Box::Draw(Shader shader)
 {
 	shader.use();
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::window_width) / (float)(Renderer::window_height), 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::instance().window_width) / (float)(Renderer::instance().window_height), 0.1f, 100.0f);
 	shader.setMat4("projection", projection);
 
 	// camera/view transformation

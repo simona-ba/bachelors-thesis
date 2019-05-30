@@ -3,15 +3,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-float deltaTime = 0.01f;	// time between current frame and last frame
+float delta_time = 0.01f;	// time between current frame and last frame
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void mouse_callback(GLFWwindow* window, double x_pos, double y_pos);
+void scroll_callback(GLFWwindow* window, double x_offset, double y_offset);
 void processInput(Renderer &r, GLFWwindow *window);
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void key_callback(GLFWwindow* window, int key, int scan_code, int action, int mods);
 
-int main()
+int main(int argc, char *argv[])
 {
 	Renderer& r = Renderer::instance();
 	glfwInit();
@@ -19,7 +19,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	GLFWwindow* window = glfwCreateWindow(Renderer::window_width, Renderer::window_height, "BachelorsThesis", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(Renderer::instance().window_width, Renderer::instance().window_height, "BachelorsThesis", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -39,15 +39,20 @@ int main()
 		return -1;
 	}
 
+	if (argc == 2)
+	{
+		r.SetDefaultModel(argv[1]);
+	}
+
 	r.Construct();
 
 	// timing
-	float lastDeltaTime = 0.0f;
+	float last_delta_time = 0.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
-		deltaTime = glfwGetTime() - lastDeltaTime;
-		lastDeltaTime = deltaTime;
+		delta_time = glfwGetTime() - last_delta_time;
+		last_delta_time = delta_time;
 
 		processInput(r, window);
 
@@ -67,18 +72,22 @@ void processInput(Renderer &r, GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		r.GetCamera()->ProcessKeyboard(FORWARD, deltaTime);
+		r.GetCamera()->ProcessKeyboard(FORWARD, delta_time);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		r.GetCamera()->ProcessKeyboard(BACKWARD, deltaTime);
+		r.GetCamera()->ProcessKeyboard(BACKWARD, delta_time);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		r.GetCamera()->ProcessKeyboard(LEFT, deltaTime);
+		r.GetCamera()->ProcessKeyboard(LEFT, delta_time);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		r.GetCamera()->ProcessKeyboard(RIGHT, deltaTime);
+		r.GetCamera()->ProcessKeyboard(RIGHT, delta_time);
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		r.GetCamera()->SetOrbit(true);
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 		r.GetCamera()->SetOrbit(false);
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
+		r.GetCamera()->SetMove(true);
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_RELEASE)
+		r.GetCamera()->SetMove(false);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -95,13 +104,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback(GLFWwindow* window, double x_offset, double y_offset)
 {
 	Renderer& r = Renderer::instance();
-	r.OnMouseScroll(xoffset, yoffset);
+	r.OnMouseScroll(x_offset, y_offset);
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void key_callback(GLFWwindow* window, int key, int scan_code, int action, int mods)
 {
 	Renderer& r = Renderer::instance();
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
@@ -111,6 +120,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
 	{
 		r.ToggleBlinn();
+	}
+	else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		r.ToggleNormal();
 	}
 	else if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
 	{

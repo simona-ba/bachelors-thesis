@@ -19,22 +19,30 @@ void Renderer::Construct()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	debug_shader_ = new Shader("Shaders/ads.vs", "Shaders/ads.fs");
+	debug_shader_ = new Shader("shaders/main.vs", "shaders/main.fs");
 
-	camera_ = CreateObject<Camera>(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f));
+	camera_ = CreateObject<Camera>();
 	camera_->UpdateCamera();
 
-	CreateObject<Cubemap>(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f));
+	CreateObject<Cubemap>();
 
-	Model* model = CreateObject<Model>(glm::vec3(0.0f, -1.f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.2f, 0.2f, 0.2f));
-	model->loadModel(string("Resources/nanosuit/nanosuit.obj"));
+	Model* model = CreateObject<Model>(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.2f, 0.2f, 0.2f));
 
-	CreateObject<Light>(glm::vec3(15.f, 9.f, 0.5f), glm::vec3(45.f, 45.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
+	if (default_model_path_ == "")
+	{
+		model->loadModel(string("resources/materialball/export3dcoat.obj"));
+	}
+	else
+	{
+		model->loadModel(string("resources/") + default_model_path_);
+	}
+
+	light_ = CreateObject<Light>(glm::vec3(2.f, 3.f, 5.f));
 }
 
 void Renderer::Draw()
 {	
-	if (currentViewMode == WIREFRAME)
+	if (current_view_mode == WIREFRAME)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
@@ -63,7 +71,7 @@ void Renderer::Draw()
 
 void Renderer::SetViewMode(ViewMode mode)
 {
-	currentViewMode = mode;
+	current_view_mode = mode;
 }
 
 unsigned int TextureFromFile(const char *path, const string &directory, bool gamma)
@@ -108,11 +116,11 @@ unsigned int TextureFromFile(const char *path, const string &directory, bool gam
 
 void Renderer::OnMouseMove(double x, double y)
 {
-	if (firstMouse_)
+	if (first_mouse_)
 	{
 		lastX_ = x;
 		lastY_ = y;
-		firstMouse_ = false;
+		first_mouse_ = false;
 	}
 
 	float xoffset = x - lastX_;
@@ -133,6 +141,8 @@ void Renderer::OnMouseScroll(double xoffset, double yoffset)
 void Renderer::OnWindowResized(int new_width, int new_height)
 {
 	glViewport(0, 0, new_width, new_height);
+	window_width = new_width;
+	window_height = new_height;
 }
 
 Camera* Renderer::GetCamera()
@@ -140,22 +150,42 @@ Camera* Renderer::GetCamera()
 	return camera_;
 }
 
+Light* Renderer::GetLight()
+{
+	return light_;
+}
+
 void Renderer::ToggleSpecular()
 {
-	specularEnabled_ = !specularEnabled_;
+	specular_enabled_ = !specular_enabled_;
 }
 
 bool Renderer::IsSpecularEnabled()
 {
-	return specularEnabled_;
+	return specular_enabled_;
 }
 
 void Renderer::ToggleBlinn()
 {
-	blinnEnabled_ = !blinnEnabled_;
+	blinn_enabled_ = !blinn_enabled_;
 }
 
 bool Renderer::IsBlinnEnabled()
 {
-	return blinnEnabled_;
+	return blinn_enabled_;
+}
+
+void Renderer::ToggleNormal()
+{
+	normal_enabled_ = !normal_enabled_;
+}
+
+bool Renderer::IsNormalEnabled()
+{
+	return normal_enabled_;
+}
+
+void Renderer::SetDefaultModel(std::string path)
+{
+	default_model_path_ = path;
 }

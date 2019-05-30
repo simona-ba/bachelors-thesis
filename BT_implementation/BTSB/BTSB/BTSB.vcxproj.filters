@@ -82,43 +82,37 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\box_shader.fs">
+    <None Include="shaders\cubemap.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\box_shader.vs">
+    <None Include="shaders\cubemap.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\nano.fs">
+    <None Include="shaders\light.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\nano.vs">
+    <None Include="shaders\light.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\shader.fs">
+    <None Include="shaders\normal.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\shader.vs">
+    <None Include="shaders\normal.gs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\light.fs">
+    <None Include="shaders\normal.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\light.vs">
+    <None Include="shaders\box_shader.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\ads.fs">
+    <None Include="shaders\box_shader.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\ads.vs">
+    <None Include="shaders\main.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\normal.gs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\normal.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\normal.fs">
+    <None Include="shaders\main.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
