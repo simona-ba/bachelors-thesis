@@ -16,6 +16,7 @@ struct Vertex
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
+	glm::vec3 Tangent;
 };
 
 struct Texture
@@ -37,6 +38,4 @@ public:
 private:
 	unsigned int VAO, VBO, EBO;
 	void setupMesh();
-
-
 };

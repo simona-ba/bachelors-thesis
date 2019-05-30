@@ -18,7 +18,7 @@ public:
 protected:
 
 	glm::vec3 location;
-	glm::vec3 rotation;
+	glm::vec3 rotation; // 3 floats: Pitch, Yaw, Roll
 	glm::vec3 scale;
 
 	glm::mat4 model_matrix;

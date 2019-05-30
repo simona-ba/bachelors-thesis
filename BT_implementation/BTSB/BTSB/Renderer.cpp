@@ -1,49 +1,47 @@
 #include "Renderer.h"
 #include "Box.h"
 #include "Model.h"
+#include "Camera.h"
+#include "Light.h"
 #include <glad/glad.h> 
 #include <stb_image/stb_image.h>
+#include "Cubemap.h"
 
 
-Renderer::Renderer()
+
+Renderer& Renderer::instance()
 {
-
+	static Renderer r;
+	return r;
 }
 
 void Renderer::Construct()
 {
 	glEnable(GL_DEPTH_TEST);
 
-	debug_shader_ = new Shader("Shaders/nano.vs", "Shaders/nano.fs");
+	debug_shader_ = new Shader("Shaders/ads.vs", "Shaders/ads.fs");
 
-	test_box_ = CreateObject<Box>(glm::vec3(10.f, 0.f, 0.f), glm::vec3(45.f, 45.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	CreateObject<Box>(glm::vec3(10.f, 5.f, 0.f), glm::vec3(45.f, 45.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	//CreateObject<Box>(glm::vec3(10.f, -5.f, 0.f), glm::vec3(45.f, 45.f, 0.f), glm::vec3(2.f, 1.f, 1.f));
+	camera_ = CreateObject<Camera>(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f));
+	camera_->UpdateCamera();
 
-	Model* model = CreateObject<Model>(glm::vec3(0.0f, -1.75f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.2f, 0.2f, 0.2f));
+	CreateObject<Cubemap>(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f));
+
+	Model* model = CreateObject<Model>(glm::vec3(0.0f, -1.f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.2f, 0.2f, 0.2f));
 	model->loadModel(string("Resources/nanosuit/nanosuit.obj"));
 
-	model = CreateObject<Model>(glm::vec3(20.f, 5.f, -5.f), glm::vec3(45.f, 45.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
-	model->loadModel(string("Resources/nanosuit/nanosuit.obj"));
-
-
-	// model-> ...
+	CreateObject<Light>(glm::vec3(15.f, 9.f, 0.5f), glm::vec3(45.f, 45.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 }
 
 void Renderer::Draw()
 {	
-	switch (currentViewMode)
+	if (currentViewMode == WIREFRAME)
 	{
-	case Default:
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		break;
-	case Wireframe:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		break;
-	default:
-		break;
 	}
-
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 
 	glClearColor(0.f, 0.1f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,4 +104,58 @@ unsigned int TextureFromFile(const char *path, const string &directory, bool gam
 	}
 
 	return textureID;
+}
+
+void Renderer::OnMouseMove(double x, double y)
+{
+	if (firstMouse_)
+	{
+		lastX_ = x;
+		lastY_ = y;
+		firstMouse_ = false;
+	}
+
+	float xoffset = x - lastX_;
+	float yoffset = y - lastY_;
+
+	lastX_ = x;
+	lastY_ = y;
+
+	camera_->ProcessMouseMovement(xoffset, yoffset);
+}
+
+
+void Renderer::OnMouseScroll(double xoffset, double yoffset)
+{
+	camera_->ProcessMouseScroll(yoffset);
+}
+
+void Renderer::OnWindowResized(int new_width, int new_height)
+{
+	glViewport(0, 0, new_width, new_height);
+}
+
+Camera* Renderer::GetCamera()
+{
+	return camera_;
+}
+
+void Renderer::ToggleSpecular()
+{
+	specularEnabled_ = !specularEnabled_;
+}
+
+bool Renderer::IsSpecularEnabled()
+{
+	return specularEnabled_;
+}
+
+void Renderer::ToggleBlinn()
+{
+	blinnEnabled_ = !blinnEnabled_;
+}
+
+bool Renderer::IsBlinnEnabled()
+{
+	return blinnEnabled_;
 }

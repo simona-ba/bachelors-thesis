@@ -77,13 +77,8 @@ void Box::Draw(Shader shader)
 	shader.setMat4("projection", projection);
 
 	// camera/view transformation
-	glm::mat4 view;
-	float radius = 10.0f;
-	glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 0.f);
-	glm::vec3 cameraFront = glm::vec3(1.f, 0.f, 0.f);
-	glm::vec3 cameraUp = glm::vec3(0.f, 0.f, 1.f);
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	shader.setMat4("view", view);
+	
+	shader.setMat4("view", Renderer::instance().GetCamera()->GetViewMatrix());
 
 	glBindVertexArray(vao_);
 

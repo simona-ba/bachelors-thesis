@@ -2,43 +2,82 @@
 #include <glm/ext.hpp>
 #include "Renderer.h"
 #include "Mesh.h"
+#include "Camera.h"
+#include "Renderer.h"
 #include <glad/glad.h>
+
+Model::Model()
+{
+	basic_lighting_ = new Shader("Shaders/ads.vs", "Shaders/ads.fs");
+	normals_visualization_ = new Shader("Shaders/normal.vs", "Shaders/normal.fs", "Shaders/normal.gs");
+}
 
 void Model::Draw(Shader shader)
 {
+	basic_lighting_->use();
+
+	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
+	basic_lighting_->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+	basic_lighting_->setVec3("lightPos", lightPos);
+	basic_lighting_->setVec3("viewPos", Renderer::instance().GetCamera()->GetLocation());
+	basic_lighting_->setInt("viewMode", Renderer::instance().currentViewMode);
+
+	// view/projection transformations
+	//glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::window_width) / (float)(Renderer::window_height), 0.1f, 100.0f);
-	shader.setMat4("projection", projection);
+
+	basic_lighting_->setMat4("projection", projection);
+	basic_lighting_->setMat4("view", Renderer::instance().GetCamera()->GetViewMatrix());
+	basic_lighting_->setInt("specularEnabled", Renderer::instance().IsSpecularEnabled());
+	basic_lighting_->setInt("blinnEnabled", Renderer::instance().IsBlinnEnabled());
+
+	// world transformation
+	//glm::mat4 model = glm::mat4(1.0f);
+	basic_lighting_->setMat4("model", model_matrix);
+
+
+	//basic_lighting_->setMat4("projection", projection);
 
 	// camera/view transformation
-	glm::mat4 view;
-	float radius = 10.0f;
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-	shader.setMat4("view", view);
-	shader.setMat4("model", model_matrix);
 
-	for (unsigned int i = 0; i < meshes.size(); i++)
+	//shader.setMat4("view", Renderer::instance().GetCamera()->GetViewMatrix());
+	//shader.setMat4("model", model_matrix);
+
+	for (unsigned int i = 0; i < meshes_.size(); i++)
 	{
-		meshes[i].Draw(shader);
+		meshes_[i].Draw(*basic_lighting_);
 	}
 
+	if (Renderer::instance().currentViewMode == NORMALS)
+	{
+		normals_visualization_->use();
+		normals_visualization_->setMat4("projection", projection);
+		normals_visualization_->setMat4("view", Renderer::instance().GetCamera()->GetViewMatrix());
+		normals_visualization_->setMat4("model", model_matrix);
+
+		for (unsigned int i = 0; i < meshes_.size(); i++)
+		{
+			meshes_[i].Draw(*normals_visualization_);
+		}
+	}
 }
 
 void Model::loadModel(string path)
 {
 	Assimp::Importer import;
-	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
 		return;
 	}
-	directory = path.substr(0, path.find_last_of('/'));
+	directory_ = path.substr(0, path.find_last_of('/'));
 
 	processNode(scene->mRootNode, scene);
+
+	cout << "Loaded model has " << vertexCount_ << " vertices and " << faceCount_ << " polygons.";
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene)
@@ -46,7 +85,7 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene));
+		meshes_.push_back(processMesh(mesh, scene));
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -60,6 +99,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
+
+	vertexCount_ += mesh->mNumVertices;
+	faceCount_ += mesh->mNumFaces;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -75,6 +117,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		vector.y = mesh->mNormals[i].y;
 		vector.z = mesh->mNormals[i].z;
 		vertex.Normal = vector;
+
+		vector.x = mesh->mTangents[i].x;
+		vector.y = mesh->mTangents[i].y;
+		vector.z = mesh->mTangents[i].z;
+		vertex.Tangent = vector;
 
 
 		if (mesh->mTextureCoords[0])
@@ -127,11 +174,11 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
 		aiString str;
 		mat->GetTexture(type, i, &str);
 		bool skip = false;
-		for (unsigned int j = 0; j < textures_loaded.size(); j++)
+		for (unsigned int j = 0; j < textures_loaded_.size(); j++)
 		{
-			if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+			if (std::strcmp(textures_loaded_[j].path.data(), str.C_Str()) == 0)
 			{
-				textures.push_back(textures_loaded[j]);
+				textures.push_back(textures_loaded_[j]);
 				skip = true;
 				break;
 			}
@@ -139,11 +186,11 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
 		if (!skip)
 		{   // if texture hasn't been loaded already, load it
 			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), directory);
+			texture.id = TextureFromFile(str.C_Str(), directory_);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
-			textures_loaded.push_back(texture); // add to loaded textures
+			textures_loaded_.push_back(texture); // add to loaded textures
 		}
 	}
 	return textures;
