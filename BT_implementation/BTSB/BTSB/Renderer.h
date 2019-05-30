@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Box.h"
 #include "Camera.h"
+#include "Light.h"
 
 using namespace std;
 
@@ -27,9 +28,9 @@ class Renderer
 {
 public:
 	
-	static const int window_width = 640 * 2;
-	static const int window_height = 480 * 2;
-	ViewMode currentViewMode = DEFAULT;
+	int window_width = 640;
+	int window_height = 480;
+	ViewMode current_view_mode = DEFAULT;
 
 	static Renderer& instance(); 
 
@@ -40,7 +41,7 @@ public:
 	void SetViewMode(ViewMode mode);
 	
 	template<typename T>
-	T* CreateObject(glm::vec3 location, glm::vec3 rotation, glm::vec3 scale = glm::vec3(1.f, 1.f, 1.f))
+	T* CreateObject(glm::vec3 location = glm::vec3(0.f, 0.f, 0.f), glm::vec3 rotation = glm::vec3(0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(1.f, 1.f, 1.f))
 	{
 		T* obj = new T;
 		obj->SetLocation(location);
@@ -54,9 +55,11 @@ public:
 
 	void OnMouseMove(double x, double y);
 
-	void OnMouseScroll(double xoffset, double yoffset);
+	void OnMouseScroll(double x_offset, double y_offset);
 
 	Camera* GetCamera();
+
+	Light* GetLight();
 
 	void ToggleSpecular();
 
@@ -65,6 +68,12 @@ public:
 	void ToggleBlinn();
 
 	bool IsBlinnEnabled();
+
+	void ToggleNormal();
+
+	bool IsNormalEnabled();
+
+	void SetDefaultModel(std::string path);
 
 protected:
 
@@ -78,11 +87,16 @@ private:
 
 	Camera* camera_;
 
+	Light* light_;
+
+	std::string default_model_path_;
+
 	Renderer() {}
 	
-	bool specularEnabled_ = true;
-	bool blinnEnabled_ = true;
-	bool firstMouse_ = true;
+	bool specular_enabled_ = true;
+	bool blinn_enabled_ = true;
+	bool normal_enabled_ = true;
+	bool first_mouse_ = true;
 	float lastX_;
 	float lastY_;
 };

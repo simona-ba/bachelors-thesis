@@ -162,19 +162,17 @@
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\ads.fs" />
-    <None Include="Shaders\ads.vs" />
-    <None Include="Shaders\box_shader.fs" />
-    <None Include="Shaders\box_shader.vs" />
-    <None Include="Shaders\light.fs" />
-    <None Include="Shaders\light.vs" />
-    <None Include="Shaders\nano.fs" />
-    <None Include="Shaders\nano.vs" />
-    <None Include="Shaders\normal.fs" />
-    <None Include="Shaders\normal.gs" />
-    <None Include="Shaders\normal.vs" />
-    <None Include="Shaders\shader.fs" />
-    <None Include="Shaders\shader.vs" />
+    <None Include="shaders\box_shader.fs" />
+    <None Include="shaders\box_shader.vs" />
+    <None Include="shaders\cubemap.fs" />
+    <None Include="shaders\cubemap.vs" />
+    <None Include="shaders\light.fs" />
+    <None Include="shaders\light.vs" />
+    <None Include="shaders\main.fs" />
+    <None Include="shaders\main.vs" />
+    <None Include="shaders\normal.fs" />
+    <None Include="shaders\normal.gs" />
+    <None Include="shaders\normal.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

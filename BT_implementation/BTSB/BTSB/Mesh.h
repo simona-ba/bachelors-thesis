@@ -17,6 +17,7 @@ struct Vertex
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
 	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
 };
 
 struct Texture
@@ -36,6 +37,6 @@ public:
 	void Draw(Shader shader);
 
 private:
-	unsigned int VAO, VBO, EBO;
+	unsigned int vao_, vbo_, ebo_;
 	void setupMesh();
 };

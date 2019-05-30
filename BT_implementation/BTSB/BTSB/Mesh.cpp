@@ -14,16 +14,16 @@ Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture
 
 void Mesh::setupMesh()
 {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	glGenVertexArrays(1, &vao_);
+	glGenBuffers(1, &vbo_);
+	glGenBuffers(1, &ebo_);
 
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindVertexArray(vao_);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
 
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
@@ -37,6 +37,9 @@ void Mesh::setupMesh()
 
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 	glBindVertexArray(0);
 }
@@ -70,7 +73,7 @@ void Mesh::Draw(Shader shader)
 	}
 
 	// DRAW
-	glBindVertexArray(VAO);
+	glBindVertexArray(vao_);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }

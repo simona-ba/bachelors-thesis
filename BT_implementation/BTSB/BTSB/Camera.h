@@ -23,28 +23,32 @@ public:
 	
 	Camera();
 
-	glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 Right;
-	glm::vec3 WorldUp = glm::vec3(0.f, 1.f, 0.f);
-	glm::vec3 WorldFront = glm::vec3(0.f, 0.f, -1.f);
-	glm::vec3 Target = glm::vec3(0.f, 0.f, 0.f);
+	glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 right;
+	glm::vec3 world_up = glm::vec3(0.f, 1.f, 0.f);
+	glm::vec3 world_front = glm::vec3(0.f, 0.f, -1.f);
+	glm::vec3 target = glm::vec3(0.f, 0.f, 0.f);
 
-	float MovementSpeed = 0.05f;
-	float MouseSensitivity = 0.6f;
-	float Zoom = 30.0f;
-	float TargetZoom = 30.f;
+	float movement_speed = 0.05f;
+	float mouse_sensitivity_orbit = 0.6f;
+	float mouse_sensitivity_move = 0.1f;
+	float zoom = 30.0f;
+	float min_zoom = 5.f;
+	float max_zoom = 100.f;
 
 	glm::mat4 GetViewMatrix();
 
-	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
-	void ProcessMouseMovement(float xoffset, float yoffset);
-	void ProcessMouseScroll(float yoffset);
+	void ProcessKeyboard(Camera_Movement direction, float delta_time);
+	void ProcessMouseMovement(float x_offset, float y_offset);
+	void ProcessMouseScroll(float y_offset);
 	void SetOrbit(bool orbit);
+	void SetMove(bool move);
 	void UpdateCamera();
 
 private:
 	bool orbit_camera_ = false;
+	bool move_camera_ = false;
 
 	void updateCameraVectors();
 };

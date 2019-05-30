@@ -73,15 +73,12 @@ Light::Light()
 }
 void Light::Draw(Shader shader)
 {
-	if (show_box_)
+	if (Renderer::instance().current_view_mode == LIGHTING_ONLY)
 	{
 		lamp_->use();
+		lamp_->setVec3("lightPos", GetLocation());
 
-		glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
-		lamp_->setVec3("lightPos", lightPos);
-
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::window_width) / (float)(Renderer::window_height), 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)(Renderer::instance().window_width) / (float)(Renderer::instance().window_height), 0.1f, 100.0f);
 		lamp_->setMat4("projection", projection);
 
 		// camera/view transformation
@@ -91,7 +88,7 @@ void Light::Draw(Shader shader)
 		glBindVertexArray(vao_);
 
 		model_matrix = glm::mat4(1.0f);
-		model_matrix = glm::translate(model_matrix, lightPos);
+		model_matrix = glm::translate(model_matrix, GetLocation());
 		model_matrix = glm::scale(model_matrix, glm::vec3(0.2f));
 
 		lamp_->setMat4("model", model_matrix);
